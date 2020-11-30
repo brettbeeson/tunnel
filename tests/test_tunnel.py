@@ -5,14 +5,14 @@ import shutil
 from pathlib import Path
 from filecmp import cmp
 import pytest
-from nuttel import SSHTunnels, nuttel_connect, nuttel_config
+from tunnel import SSHTunnels, tunnel_connect, tunnel_config
 
 
 TEST_DATA = Path(__file__).parent 
 
 @pytest.fixture()
 def setup_debug():
-    logging.getLogger("nuttel").setLevel(logging.DEBUG)
+    logging.getLogger("tunnel").setLevel(logging.DEBUG)
     logging.basicConfig()
 
 
@@ -21,17 +21,17 @@ def test_connect(setup_debug):
     # config needs an arg
     cl = ["--user", "bbeeson","--config"]
     with pytest.raises(SystemExit) as exc:
-        nuttel_connect(cl)
+        tunnel_connect(cl)
     assert exc.value.code == 2
 
     cl = [""]
     with pytest.raises(SystemExit) as exc:
-        nuttel_connect(cl)
+        tunnel_connect(cl)
     assert exc.value.code == 0
 
     cl = ["fail", "--user", "user1", "user2"]
     with pytest.raises(SystemExit) as exc:
-        nuttel_connect(cl)
+        tunnel_connect(cl)
     assert exc.value.code == 2
 
 
@@ -39,20 +39,20 @@ def test_connect_live(setup_debug):
     # Test needs a loop tunnel to localhost and a ~/.id == coolhost:
     # ssh -N -R 0:localhost:22 localhost
     # echo coolhost > ~/.id
-    cl = ["queen", "--user", "bbeeson", "--dry-run"]
+    cl = ["ubu18", "--user", "bbeeson", "--dry-run"]
     with pytest.raises(SystemExit) as exc:
-        nuttel_connect(cl)
+        tunnel_connect(cl)
     assert exc.value.code == 0
 
 
     cl = ["coolhost", "--user", "bbeeson", "--dry-run"]
     with pytest.raises(SystemExit) as exc:
-        nuttel_connect(cl)
+        tunnel_connect(cl)
     assert exc.value.code == 0
 
     cl = ["nohost", "--user", "bbeeson", "--dry-run"]
     with pytest.raises(SystemExit) as exc:
-        nuttel_connect(cl)
+        tunnel_connect(cl)
     assert exc.value.code == 2
 
 
@@ -80,6 +80,6 @@ def test_config(setup_debug, tmp_path):
 def test_config_console(setup_debug, tmp_path):
     cl = ["--jump","phisaver","--user", "pi"]
     with pytest.raises(SystemExit) as exc:
-        nuttel_config(cl)
+        tunnel_config(cl)
     assert exc.value.code == 0
 
