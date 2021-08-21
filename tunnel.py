@@ -1,4 +1,4 @@
-#/usr/bin/env python3
+#!/usr/bin/env python3
 # pylint: disable=dangerous-default-value, logging-fstring-interpolation), import-error
 from enum import Enum
 import re
