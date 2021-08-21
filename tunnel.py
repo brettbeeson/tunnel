@@ -187,7 +187,11 @@ class SSHTunnels():
         for t in self._tunnels:
             if not t.name in hosts:
                 LOGGER.info(f"Adding unit: name:{t.name} host:{t.host} id:{t.id}")
-                c.add(t.name)
+                try:
+                    c.add(t.name)
+                except ValueError as e:
+                    LOGGER.warning(f"Exception: {e}")
+                    LOGGER.warning(f"Duplicate entry ignored: {t}")
             LOGGER.info(f"Updating host: {t.user}@{t.name}:{t.port} via {t.ip} (host:{t.host} id:{t.id})")
             #c.set(t.name, Hostname=t.ip, Port=t.port, User=t.user)
             c.set(t.name, Hostname="127.0.0.1", Port=t.port, User=t.user)
